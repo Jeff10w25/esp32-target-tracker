@@ -1,0 +1,5 @@
+# Model
+
+Face detection model used in this repository is from [spmallick || Learn OpenCV](https://github.com/spmallick/learnopencv/)
+
+Currently, I have no knowledge about model training but in the future, I might try training one myself!
