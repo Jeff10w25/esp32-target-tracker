@@ -1,10 +1,8 @@
 #include "esp_camera.h"
 #include "esp_http_server.h"
 #include "esp_timer.h"
-#include "esp32-hal-ledc.h"
 #include "soc/soc.h"           // Disable brownout problems
 #include "soc/rtc_cntl_reg.h"  // Disable brownout problems
-#include "servo_functions.h"
 #include <Arduino.h>
 #include <Wifi.h>
 
@@ -128,8 +126,6 @@ void startCameraServer() {
 }
 
 void setup() {
-    WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, 0);  // prevent brownouts
-
     Serial.begin(115200);
     Serial.setDebugOutput(true);
     Serial.println();
@@ -155,8 +151,11 @@ void setup() {
     config.pin_reset = RESET_GPIO_NUM;
     config.xclk_freq_hz = 20000000;
     config.pixel_format = PIXFORMAT_JPEG; // for streaming
+    //config.pixel_format = PIXFORMAT_RGB565; // for face detection/recognition
     config.grab_mode = CAMERA_GRAB_WHEN_EMPTY;
     config.fb_location = CAMERA_FB_IN_PSRAM;
+    // config.jpeg_quality = 12;
+    // config.fb_count = 1;
     
     // if PSRAM IC present, init with UXGA resolution and higher JPEG quality for larger pre-allocated frame buffer.
     // FRAMESIZE_UXGA (1600 x 1200)
@@ -167,17 +166,21 @@ void setup() {
     // FRAMESIZE_XGA (1024 x 768)
     // FRAMESIZE_SXGA (1280 x 1024)
 
-    if (psramFound()) {
-        config.frame_size = FRAMESIZE_VGA;  // 
-        config.jpeg_quality = 12;
-        config.fb_count = 2;
-        config.grab_mode = CAMERA_GRAB_LATEST;
-    } else {
+    if (config.pixel_format == PIXFORMAT_JPEG) {
+        if (psramFound()) {
+            config.frame_size = FRAMESIZE_VGA;  // 
+            config.jpeg_quality = 10;
+            config.fb_count = 2;
+            config.grab_mode = CAMERA_GRAB_LATEST;
+        } else {
         // Limit the frame size when PSRAM is not available
+            config.frame_size = FRAMESIZE_SVGA;
+            config.fb_location = CAMERA_FB_IN_DRAM;
+        }
+    } else {
+        // Best option for face detection/recognition
         config.frame_size = FRAMESIZE_240X240;
-        config.fb_location = CAMERA_FB_IN_DRAM;
     }
-
 
     // Camera init
     esp_err_t err = esp_camera_init(&config);
@@ -186,15 +189,17 @@ void setup() {
         return;
     }
 
-    sensor_t* s = esp_camera_sensor_get();
+    sensor_t * s = esp_camera_sensor_get();
     
     // initial sensors are flipped vertically and colors are a bit saturated
-    s->set_vflip(s, 1);         // 0 or 1
-    s->set_hmirror(s, 1);       // 0 or 1
-    s->set_brightness(s, 2);    // -2 to 2
-    s->set_contrast(s, 0);      // -2 to 2
-    s->set_saturation(s, 0);    // -2 to 2
-    
+    #if defined(CAMERA_MODEL_AI_THINKER)
+    s->set_vflip(s, 1);
+    s->set_brightness(s, 2);     // -2 to 2
+    s->set_contrast(s, 0);       // -2 to 2
+    s->set_saturation(s, 0);     // -2 to 2
+    #endif
+
+    // s->set_brightness(s, 2);     // -2 to 2
     // s->set_contrast(s, 0);       // -2 to 2
     // s->set_saturation(s, 0);     // -2 to 2
     // s->set_special_effect(s, 0); // 0 to 6 (0 - No Effect, 1 - Negative, 2 - Grayscale, 3 - Red Tint, 4 - Green Tint, 5 - Blue Tint, 6 - Sepia)
@@ -203,6 +208,7 @@ void setup() {
     // s->set_wb_mode(s, 0);        // 0 to 4 - if awb_gain enabled (0 - Auto, 1 - Sunny, 2 - Cloudy, 3 - Office, 4 - Home)
     // s->set_exposure_ctrl(s, 1);  // 0 = disable , 1 = enable
     // s->set_aec2(s, 0);           // 0 = disable , 1 = enable
+    
 
     WiFi.begin(ssid, password);
     WiFi.setSleep(false);
@@ -219,10 +225,10 @@ void setup() {
     Serial.println("' for image processing.");
 
     startCameraServer();
+
 }
 
 void loop() {
-    // Do nothing. Everything is done in another task by the web server
-    // Put your main function here
-    delay(100);
+  // Do nothing. Everything is done in another task by the web server
+    delay(10000);
 }
