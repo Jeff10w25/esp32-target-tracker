@@ -26,31 +26,33 @@ class Servo:
     def servoName(self) -> str:
         return "{} type: {}".format(self.name, self.type)
         
-    def validAngle(angle: int) -> int:
-        """ Output angle value between 0-180 degrees only """    
-        if angle < Servo.MIN_ANGLE:
-            validAngle = Servo.MIN_ANGLE
-        elif angle > Servo.MAX_ANGLE:
-            validAngle = Servo.MAX_ANGLE
+    def validAngle(self, angle: int) -> int:
+        """ Takes in any angle value and returns angle value between 0-180 degrees """    
+        if angle < self.MIN_ANGLE:
+            return self.MIN_ANGLE
+        elif angle > self.MAX_ANGLE:
+            return self.MAX_ANGLE
         else:
-            validAngle = angle
-        return validAngle
+            return angle
         
     def sweepServo(self, delay: int) -> None:
-        """ Start sweeping servo from 0-180 degrees angle """
-        for i in range(0, 181, 1):
+        """ Start sweeping servo from 0-180-0 degrees angle """
+        for i in range(0, self.MAX_ANGLE + 1, 1):
             self.servo.write(i)
             time.sleep(delay)
-        for i in range(180, -1, -1):
+        for i in range(self.MAX_ANGLE, self.MIN_ANGLE, -1):
             self.servo.write(i)
             time.sleep(delay)
         
     def writeAngle(self, angle: int) -> None:
-        outAngle = Servo.validAngle(angle)
+        outAngle = self.validAngle(angle)
         self.servo.write(outAngle)
         
-    def moveAngle(self, angle: int) -> None:
-        pass
+    def moveAngle(self, currentAngle: int, movAngle: int) -> int:
+        """ Move servo by certain angle (negative or positive) from its current position """
+        newAngle = currentAngle + movAngle
+        self.servo.write(newAngle)
+        return newAngle
         
 
 # Test run only
@@ -61,13 +63,15 @@ if __name__ == '__main__':
     PORT = 'COM5'
     
     # Select the board used to control servo motor
-    
-    # board = Arduino(port)   
+    # BOARD = Arduino(PORT)   
     BOARD = ArduinoMega(PORT)
 
     servoPan = Servo("servoPan", "MG90S", PIN1, BOARD)
     servoTilt = Servo("servoTilt", "MG90S", PIN2, BOARD)
 
+    startPan = 90
+    startTilt = 90
+    
     print(servoPan.servoName())
     while True:
         servoPan.writeAngle(90)
@@ -75,4 +79,7 @@ if __name__ == '__main__':
         # servoPan.sweepServo(0.05)
         # servoTilt.sweepServo(0.05)
         
+        # startPan = servoPan.moveAngle(startPan, -2)
+        # startTilt = servoTilt.moveAngle(startTilt, +2)
+        # time.sleep(0.25)
         
