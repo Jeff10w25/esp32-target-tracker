@@ -3,7 +3,6 @@ from pyfirmata import Arduino, ArduinoMega, SERVO
 
 # Trying OOP!
 class Servo:
-
     STARTING_ANGLE: int = 90
     MIN_ANGLE: int = 0
     MAX_ANGLE: int = 180
@@ -51,7 +50,7 @@ class Servo:
     def moveAngle(self, currentAngle: int, movAngle: int) -> int:
         """ Move servo by certain angle (negative or positive) from its current position """
         newAngle = currentAngle + movAngle
-        self.servo.write(newAngle)
+        self.servo.write(self.validAngle(newAngle))
         return newAngle
         
 
@@ -74,7 +73,7 @@ if __name__ == '__main__':
     
     print(servoPan.servoName())
     while True:
-        servoPan.writeAngle(90)
+        servoPan.writeAngle(120)
         servoTilt.writeAngle(90)
         # servoPan.sweepServo(0.05)
         # servoTilt.sweepServo(0.05)
