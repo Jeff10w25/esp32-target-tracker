@@ -80,12 +80,14 @@ Face and color tracking ESP32-Camera with 2-axis movement using servo motors
 ## Configuration
 
 1. **Set the FOV of the image received from ESP32-CAM** 
+    
     Note: the desired values might be lower than the actual FOV values due to the limitations of the servo motors 
     ```python
     image640_480_fov = ImageFOV(640, 480, 15, 13)
    
 
 2. **Open `main.py` and set your color in BGR:**
+    
     The tracked color should be relatively bright and saturated
     ```python
     # Select color
