@@ -34,12 +34,12 @@ class Servo:
         else:
             return angle
         
-    def sweepServo(self, delay: int) -> None:
+    def sweepServo(self, value: int, delay: int) -> None:
         """ Start sweeping servo from 0-180-0 degrees angle """
-        for i in range(0, self.MAX_ANGLE + 1, 1):
+        for i in range(self.MIN_ANGLE, self.MAX_ANGLE + 1, value):
             self.servo.write(i)
             time.sleep(delay)
-        for i in range(self.MAX_ANGLE, self.MIN_ANGLE, -1):
+        for i in range(self.MAX_ANGLE, self.MIN_ANGLE - 1, -value):
             self.servo.write(i)
             time.sleep(delay)
         
@@ -50,7 +50,7 @@ class Servo:
     def moveAngle(self, currentAngle: int, movAngle: int) -> int:
         """ Move servo by certain angle (negative or positive) from its current position """
         newAngle = currentAngle + movAngle
-        self.servo.write(self.validAngle(newAngle))
+        self.writeAngle(newAngle)
         return newAngle
         
 
@@ -73,10 +73,10 @@ if __name__ == '__main__':
     
     print(servoPan.servoName())
     while True:
-        servoPan.writeAngle(120)
-        servoTilt.writeAngle(90)
-        # servoPan.sweepServo(0.05)
-        # servoTilt.sweepServo(0.05)
+        # servoPan.writeAngle(120)
+        # servoTilt.writeAngle(90)
+        servoPan.sweepServo(1, 0.03)
+        servoTilt.sweepServo(1, 0.03)
         
         # startPan = servoPan.moveAngle(startPan, -2)
         # startTilt = servoTilt.moveAngle(startTilt, +2)
