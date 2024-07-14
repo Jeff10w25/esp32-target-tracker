@@ -9,7 +9,7 @@ class ColorDetect:
     def getLimits(self) -> tuple[int]:
         c = np.uint8([[self.color]])  # BGR values
         hsvC = cv2.cvtColor(c, cv2.COLOR_BGR2HSV)
-        hue = hsvC[0][0][0]  # Get the hue value
+        hue = hsvC[0][0][0] 
 
         # Handle red hue wrap-around
         if hue >= 165:  # Upper limit for divided red hue

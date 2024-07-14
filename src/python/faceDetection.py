@@ -1,4 +1,5 @@
 import cv2
+import numpy as np
 
 class CaffeModel:
     def __init__(self, modelProto: str, modelName: str, widthIn: int, heightIn: int, mean: int, confThreshold: int) -> None:
@@ -23,15 +24,15 @@ class CaffeModel:
         self.detections = self.net.forward()
         
     def detectionAndCentroid(self, frame: any) -> tuple:
-        """ Detect object(s) and draw rectangle with confidence percentage around them """
-        """ And returns the centroid of the rectangle """
+        """ Detect object(s) and draw rectangle with confidence percentage around them 
+            and returns the centroid of the rectangle """
         self.setBlob(frame)
-        
-        middlePoint = (0, 0)
         
         result = frame
         frameHeight = result.shape[0]
         frameWidth = result.shape[1]
+        
+        middlePoint = (320, 240)
         
         # detectAmount = self.detections.shape[2]
         detectAmount = 1
@@ -39,18 +40,18 @@ class CaffeModel:
         for i in range(detectAmount): 
             confidence: float = self.detections[0, 0, i, 2]
             if confidence > self.confThreshold:
-                x_left_bottom = int(self.detections[0, 0, i, 3] * frameWidth)
-                y_left_bottom = int(self.detections[0, 0, i, 4] * frameHeight)
-                x_right_top = int(self.detections[0, 0, i, 5] * frameWidth)
-                y_right_top = int(self.detections[0, 0, i, 6] * frameHeight)
+                x_left_bottom = self.detections[0, 0, i, 3] * frameWidth
+                y_left_bottom = self.detections[0, 0, i, 4] * frameHeight
+                x_right_top = self.detections[0, 0, i, 5] * frameWidth
+                y_right_top = self.detections[0, 0, i, 6] * frameHeight
                     
-                middlePoint = [(x_left_bottom + x_right_top)/2, (y_left_bottom + y_right_top)/2]
-                middleText = "Middle point: {}, {}".format(int(middlePoint[0]), int(middlePoint[1]))
+                middlePoint = (np.round(x_left_bottom + x_right_top)/2, np.round(y_left_bottom + y_right_top)/2)
+                middleText = "Middle point: {}, {}".format(middlePoint[0], middlePoint[1])
                     
                 # Green outline surrounding faces
-                cv2.rectangle(result, (x_left_bottom, y_left_bottom), (x_right_top, y_right_top), (0, 255, 0))
-                label = "Confidence: %.4f" % confidence
-                label_size, base_line = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, 0.5, 1)
+                cv2.rectangle(result, (x_left_bottom, y_left_bottom), (x_right_top, y_right_top), (0, 255, 0), 3)
+                # label = "Confidence: %.4f" % confidence
+                # label_size, base_line = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, 0.5, 1)
 
                 # # Confidence text box
                 # cv2.rectangle(result, (x_left_bottom, y_left_bottom - label_size[1]),
@@ -70,7 +71,7 @@ if __name__ == '__main__':
 
     from camera import Camera
     # Setup camera
-    URL = "http://192.168.1.40/"
+    URL = "http://192.168.1.44"
     WINDOW_NAME = "Esp32 live cam"
     
     esp32 = Camera(URL, WINDOW_NAME)
