@@ -19,8 +19,9 @@ Face and color tracking ESP32-Camera with 2-axis movement using servo motors
 - PlatformIO on Visual Studio Code
 
 ## Installation
-
-- `pip install requirements.txt`
+- Clone the github repository to your device
+- `cd esp32-target-tracker`
+- `pip install -r requirements.txt`
 
 ### Setting up Arduino Module
 
@@ -94,7 +95,7 @@ Face and color tracking ESP32-Camera with 2-axis movement using servo motors
 ## Usage
 
 - Run `main.py`.
-- Use the key Esc, D, F, and C on the keyboard to switch modes.
+- Use the keys **Esc**, **D**, **F**, and **C** on the keyboard to switch modes.
 
 ## Troubleshooting
 
