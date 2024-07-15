@@ -10,7 +10,6 @@ Face and color tracking ESP32-Camera with 2-axis movement using servo motors
 - Arduino Mega2560 or other Arduino modules
 - 2 Servo motors
 - Pan and Tilt camera platform
-- 5 Vdc Power Supply (at least 2.0 A for ESP32-Cam)
 - Breadboard (optional)
 
 ## Software Requirements
@@ -22,6 +21,12 @@ Face and color tracking ESP32-Camera with 2-axis movement using servo motors
 - Clone the github repository to your device
 - `cd esp32-target-tracker`
 - `pip install -r requirements.txt`
+
+## Wiring
+- for ESP32-CAM, power supply should be 5 Vdc with **atleast 2.0 A**
+- for servo motors, power supply should be 4.8-6.0 Vdc
+- a 5 Vdc wall outlet adapter is suitable for both
+![screenshot](docs/images/wiring_diagram.png)
 
 ### Setting up Arduino Module
 
