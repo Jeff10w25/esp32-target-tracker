@@ -31,10 +31,10 @@ class ImageFOV:
     def setThreshold(angleIn: int, upper: int) -> int:    
         """ Set the maximum angle that servo motor can move """
         if abs(angleIn) > upper and angleIn >= 0:
-            angleOut = ImageFOV.expo(upper)
+            angleOut = upper
         elif abs(angleIn)  > upper and angleIn < 0:
-            angleOut = -(ImageFOV.expo(upper))
+            angleOut = -upper
         else: 
-            angleOut = ImageFOV.expo(angleIn)
+            angleOut = angleIn
         return angleOut
     

@@ -36,8 +36,8 @@ static const char* _STREAM_PART = "Content-Type: image/jpeg\r\nContent-Length: %
 #include "camera_pins.h"
 
 //Wifi Network credentials
-const char* ssid = "Nattakit_2G";  // REPLACE_WITH_YOUR_SSID
-const char* password = "tsza5789";  // REPLACE_WITH_YOUR_PASSWORD
+const char* ssid = "YOUR_WIFI_NAME";  // REPLACE_WITH_YOUR_SSID
+const char* password = "YOUR_WIFI_PASSWORD";  // REPLACE_WITH_YOUR_PASSWORD
 
 httpd_handle_t stream_httpd = NULL;
 
