@@ -1,6 +1,6 @@
 # ESP32 Target Tracker
 
-![overview demo](docs/videos/overview.mp4)
+![overview demo](docs/gifs/overview.gif)
 
 Face and color tracking ESP32-Camera with 2-axis movement using servo motors
 
