@@ -1,6 +1,6 @@
 # ESP32 Target Tracker
 
-gif gif gif
+![overview demo](docs/videos/overview.mp4)
 
 Face and color tracking ESP32-Camera with 2-axis movement using servo motors
 
@@ -23,10 +23,12 @@ Face and color tracking ESP32-Camera with 2-axis movement using servo motors
 - `pip install -r requirements.txt`
 
 ## Wiring
-- for ESP32-CAM, power supply should be 5 Vdc with **atleast 2.0 A**
-- for servo motors, power supply should be 4.8-6.0 Vdc
-- a 5 Vdc wall outlet adapter is suitable for both
-![screenshot](docs/images/wiring_diagram.png)
+- For ESP32-CAM, power supply should be 5 Vdc with **atleast 2.0 A**
+- For servo motors, power supply should be 4.8-6.0 Vdc
+- 5 Vdc wall outlet adapter is suitable for both
+
+
+![wiring](docs/images/wiring_diagram.png)
 
 ### Setting up Arduino Module
 
@@ -91,13 +93,18 @@ Face and color tracking ESP32-Camera with 2-axis movement using servo motors
     image640_480_fov = ImageFOV(640, 480, 15, 13)
    
 
-2. **Open `main.py` and set your color in BGR:**
+2. **Set your tracked color in BGR colorspace**
     
     The tracked color should be relatively bright and saturated
     ```python
     # Select color
     orange = [7, 20, 120]  # orange in BGR colorspace
     colorDetect = ColorDetect(orange)
+
+3. **Set an angle range that servos can move in a frame**
+   ```python
+   if mid_point != (0, 0):
+      anglePan, angleTilt = image640_480_fov.posToAngle(mid_point, 1, 5)
 
 ## Usage
 
